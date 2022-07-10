@@ -1,21 +1,4 @@
 #Total e Média
-stratified_random_sample_allocation<-function(N,N_h,n_h,average_h,s2_h,alpha){
-  n_h=1/N * n *N_h
-  print("Proportional Allocation:")
-  print(n_h)
-  print("This does not take into consideration the variability within each stratum and is not the optimal choice.")
-  if(all(!is.na(s2_h))){
-    print("##########################################")
-    n_h = ( n*N_h*sqrt(s2_h) ) / ( sum( N_h*sqrt(s2_h) ) )
-    print("Optimal allocation where the cost of sampling from each stratum is the same:")
-    print(round(n_h))
-  }
-  print("##########################################")
-  print("-Note for Optimal allocation:")
-  print("1. allocate a larger sample size to the larger and more variable stratum.")
-  print("2. allocates smaller sample sizes to the more expensive stratum.")
-}
-#Tamanho da amostra
 stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
   #Mean
   mean=1/N*sum( N_h*average_h )
@@ -46,6 +29,23 @@ stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
          ))
  )
  return(list(mean=mean,var_mean=var_mean,total=total,var_total=var_total,a_h=a_h,d=d,t=t,erro_mean=erro_mean,erro_total=erro_total,IC_mean=IC_mean,IC_total=IC_total))
+}
+#Tamanho da amostra
+stratified_random_sample_allocation<-function(N,N_h,n_h,average_h,s2_h,alpha){
+  n_h=1/N * n *N_h
+  print("Proportional Allocation:")
+  print(n_h)
+  print("This does not take into consideration the variability within each stratum and is not the optimal choice.")
+  if(all(!is.na(s2_h))){
+    print("##########################################")
+    n_h = ( n*N_h*sqrt(s2_h) ) / ( sum( N_h*sqrt(s2_h) ) )
+    print("Optimal allocation where the cost of sampling from each stratum is the same:")
+    print(round(n_h))
+  }
+  print("##########################################")
+  print("-Note for Optimal allocation:")
+  print("1. allocate a larger sample size to the larger and more variable stratum.")
+  print("2. allocates smaller sample sizes to the more expensive stratum.")
 }
 #Pos-stratification
 Pos_stratification_mean_total<-function(N,n,n_h,average_h,s2_h,real_prop,alpha,fti){
