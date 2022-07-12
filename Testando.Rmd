@@ -1,6 +1,6 @@
 ---
 title: "Testando"
-output: html_document
+output: github_document
 date: '2022-07-12'
 ---
 
