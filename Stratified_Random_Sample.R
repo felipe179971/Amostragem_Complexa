@@ -12,7 +12,6 @@ stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
   a_h= N_h*(N_h-n_h)/n_h 
   d= ( sum(a_h*s2_h) )^2 / ( sum( (a_h*s2_h)^2/(n_h-1) ) )
   t=qt(1-alpha/2,round(d))
-  
   erro_mean=t*sqrt(var_mean)
   erro_total=t*sqrt(var_total)
   IC_mean=c(mean-erro_mean,mean+erro_mean )
@@ -76,7 +75,7 @@ average_h=c(1.6,2.8,0.6)
 s2_h=c(3.3,4,2.2)
 alpha=0.05
 N=sum(N_h)
-stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h)
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
 ################################################################################
 #https://online.stat.psu.edu/stat506/book/export/html/655
 #Example 6-1: Average Hours Watching TV Per Week
@@ -95,12 +94,13 @@ s2_h=tapply(y,stratum,var)
 alpha=0.05
 N=sum(N_h)
 #Resultado
-stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h)
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
 #Tentando fazer usando weighted.mean o resultado não bate. PQ???
 TVhour$peso=NA
 TVhour$peso[which(TVhour$Area==1)]<-N_h[1]/N
 TVhour$peso[which(TVhour$Area==2)]<-N_h[2]/N
 TVhour$peso[which(TVhour$Area==3)]<-N_h[3]/N
+weighted.mean(x=TVhour$Hour,TVhour$peso)
 weighted.mean(x=TVhour$Hour,w=TVhour$peso)
 #se coloco qualque letra no lugar de w, funciona (PQ?)
 weighted.mean(x=TVhour$Hour,a=TVhour$peso)
