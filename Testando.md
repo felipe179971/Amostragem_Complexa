@@ -1,34 +1,35 @@
-Testando
+Stratified Sampling
 ================
 2022-07-12
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that
-includes both content as well as the output of any embedded R code
-chunks within the document. You can embed an R code chunk like this:
-
 ``` r
-summary(cars)
+source(file = "Functions.R")
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+# 01
 
-## Including Plots
+<img src="Images/01.png" width="100%" />
 
-You can also embed plots, for example:
+## Doing the calculations
 
-![](Testando_files/figure-gfm/pressure-1.png)<!-- -->
+<img src="Images/01-1.jpg" width="50%" />
+<img src="Images/01-2.jpg" width="50%" />
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+## With my function
+
+``` r
+N_h=c(20,9,12)
+n_h=c(5,3,4)
+average_h=c(1.6,2.8,0.6)
+s2_h=c(3.3,4,2.2)
+alpha=0.05
+N=sum(N_h)
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
+```
+
+    ##         . Pontual Variância        a        d        t    erro
+    ## 1 Average  1.5707     0.192 60;18;24 7.821472 2.306004  1.0105
+    ## 2   Total 64.4000   322.800 60;18;24 7.821472 2.306004 41.4311
+    ##                   IC
+    ## 1    (0.5602;2.5812)
+    ## 2 (22.9689;105.8311)

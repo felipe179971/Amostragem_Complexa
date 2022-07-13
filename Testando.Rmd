@@ -1,29 +1,34 @@
 ---
-title: "Testando"
+title: "Stratified Sampling"
 output: github_document
 date: '2022-07-12'
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+source(file = "Functions.R")
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# 01
+```{r pressure, echo=F, out.width = '100%'}
+knitr::include_graphics("Images/01.png")
 ```
 
-## Including Plots
+## Doing the calculations
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/01-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/01-2.jpg")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## With my function
+```{r}
+N_h=c(20,9,12)
+n_h=c(5,3,4)
+average_h=c(1.6,2.8,0.6)
+s2_h=c(3.3,4,2.2)
+alpha=0.05
+N=sum(N_h)
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
+```
+
