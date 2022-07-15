@@ -1,4 +1,5 @@
-#Total e Média
+#Stratificado###################################################################
+#Calculo do Total e Média
 stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
   #Mean
   mean=1/N*sum( N_h*average_h )
@@ -11,7 +12,8 @@ stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
   #IC
   a_h= N_h*(N_h-n_h)/n_h 
   d= ( sum(a_h*s2_h) )^2 / ( sum( (a_h*s2_h)^2/(n_h-1) ) )
-  t=qt(1-alpha/2,round(d))
+  trunc_d=trunc(d) #to be more conservative 
+  t=qt(1-alpha/2,trunc_d)
   erro_mean=t*sqrt(var_mean)
   erro_total=t*sqrt(var_total)
   IC_mean=c(mean-erro_mean,mean+erro_mean )
@@ -24,6 +26,7 @@ stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
     `Variância`=c(round(var_mean,4),round(var_total,4)),
     `a`=rep(paste0(a_h,collapse=";"),2),
     `d`=rep(d,2),
+    `trunc_d`=trunc_d,
     `t`=rep(t,2),
     `erro`=c(round(erro_mean,4),round(erro_total,4)),
     IC=c(paste0("(",round(IC_mean[1],4),";",round(IC_mean[2],4),")"),
@@ -32,7 +35,7 @@ stratified_random_sample_mean_total<-function(N,N_h,n_h,average_h,s2_h,alpha){
  )
  #return(list(mean=mean,var_mean=var_mean,total=total,var_total=var_total,a_h=a_h,d=d,t=t,erro_mean=erro_mean,erro_total=erro_total,IC_mean=IC_mean,IC_total=IC_total))
 }
-#Tamanho da amostra
+#Tamanho da amostra para o Total ou Média
 stratified_random_sample_allocation<-function(N,N_h,n_h,average_h,s2_h,alpha){
   n_h=1/N * n *N_h
   print("Proportional Allocation:")
@@ -49,7 +52,7 @@ stratified_random_sample_allocation<-function(N,N_h,n_h,average_h,s2_h,alpha){
   print("1. allocate a larger sample size to the larger and more variable stratum.")
   print("2. allocates smaller sample sizes to the more expensive stratum.")
 }
-#Pos-stratification
+#Pos-stratification para Total ou Média
 Pos_stratification_mean_total<-function(N,n,n_h,average_h,s2_h,real_prop,alpha,fti){
   if(all(is.na(N)) | fti==FALSE){
     print("Ignoring the finite correction factor")
@@ -68,6 +71,47 @@ Pos_stratification_mean_total<-function(N,n,n_h,average_h,s2_h,real_prop,alpha,f
   
 
 }
+#Calculo da proporção
+stratified_random_sample_proportion<-function(N,N_h,n_h,proportion_h){
+  #Mean
+  proportion=1/N*sum( N_h*proportion_h )
+  var_p_hat=( (N_h-n_h)/N_h ) * ( (proportion_h*(1-proportion_h))/(n_h-1) )
+  var_proportion= 1/N^2 * sum( (N_h)^2*var_p_hat )
+ 
+  #Resultado
+  print(data.frame(
+    `.`=c("proportion"),
+    Pontual=proportion,
+    `var_p_hat`=paste0(round(var_p_hat,4),collapse=";"),
+    `var_proportion`=var_proportion
+    )
+  )
+  #return(list(mean=mean,var_mean=var_mean,total=total,var_total=var_total,a_h=a_h,d=d,t=t,erro_mean=erro_mean,erro_total=erro_total,IC_mean=IC_mean,IC_total=IC_total))
+}
+#Ratio##########################################################################
+ratio_estimators<-function(sum_yi,sum_xi,sum_yisquare,sum_xisquare,sum_yixi,n,avarega_x){
+  #ratio
+  r=sum_yi/sum_xi
+  s2_y=1/(n-1)*( (sum_yisquare-1/n*(sum_yi)^2) )
+  s2_x=1/(n-1)*( (sum_xisquare-1/n*(sum_xi)^2) )
+  s2_yx=1/(n-1)*( (sum_yixi-1/n*(sum_yi)*(sum_xi)) )
+  var_r=1/(n*avarega_x^2)*(s2_y+r^2*s2_x-2*r*s2_yx)
+  EP_r=sqrt(var_r)
+  CV_X=sqrt(n*s2_x)/(n*avarega_x)
+  if(CV_X<=2){print("How CV<=0.2, The Taylor Series approximation is satisfactory for the variance estimation")}else{print("How CV>0.2, The Taylor Series approximation is not satisfactory for the variance estimation")}
+  #Resultado
+  print(data.frame(
+    `.`=c("Ratio"),
+    Pontual=c(round(r,4)),
+    s2_y=c(round(s2_y,4)),
+    s2_x=c(round(s2_x,4)),
+    s2_yx=c(round(s2_yx,4)),
+    var_r=c(round(var_r,4)),
+    EP_r=c(round(EP_r,4)),
+    CV_X=c(round(CV_X,4))
+  ))
+}
+
 
 #################################################################################
 ##[Sampling (Steven K. Thompson)]

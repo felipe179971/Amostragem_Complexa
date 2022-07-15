@@ -1,0 +1,287 @@
+---
+title: "Stratified Sampling: Example 01"
+output: github_document
+date: '2022-07-12'
+---
+```{r}
+source(file = "Functions.R")
+```
+## 01. [Mean/Total] Sampling (Steven K. Thompson), Chapter 11 Example 1
+
+```{r pressure, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/01.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/01-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/01-2.jpg")
+```
+
+### With my function
+```{r}
+N_h=c(20,9,12)
+n_h=c(5,3,4)
+average_h=c(1.6,2.8,0.6)
+s2_h=c(3.3,4,2.2)
+alpha=0.05
+N=sum(N_h)
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
+```
+
+## 02. [Allocation] Sampling (Steven K. Thompson), Chapter 11 Example 4
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/02.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/02-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/02-2.jpg")
+```
+
+### With my function
+```{r}
+N_h=c(150,90,120)
+n=12
+s2_h=c(100^2,200^2,300^2)
+N=sum(N_h)
+stratified_random_sample_allocation(N,N_h,n_h,average_h,s2_h)
+```
+## 03. [Poststratification] PennState (Eberly College os Science), Chapter 6.3 Example 6-2 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.3
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/03.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/03-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/03-2.jpg")
+```
+
+### With my function
+```{r}
+n_h=c(70,30)
+average_h=c(520,280)
+s2_h=c(210^2,90^2)
+alpha=0.05
+N=NA
+real_prop=c(.4,.6)
+n=100
+fti=T #ignore the finite correction factor = FALSE
+Pos_stratification_mean_total(N,n,n_h,average_h,s2_h,real_prop,alpha,fti)
+```
+
+## 04. [Mean/Total] PennState (Eberly College os Science), Chapter 6.1 Example 6-1 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.1
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/04.png")
+```
+
+### Doing the calculations
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/04-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/04-2.jpg")
+```
+
+### With my function
+```{r}
+TVhour<-data.frame(
+  Hour=c(35,43,36,39,28,28,29,25,38,27,26,32,29,40,35,41,37,31,45,34,27,15,4,41,49,25,10,30,8,14,12,15,30,32,21,20,34,7,11,24)
+  ,Area=c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3)
+)
+#Foi dado que
+stratum=TVhour$Area
+y=TVhour$Hour
+N_h=c(155,62,93)
+#Obtendo os outros dados
+n_h=tapply(y,stratum,length)
+average_h=tapply(y,stratum,mean)
+s2_h=tapply(y,stratum,var)
+alpha=0.05
+N=sum(N_h)
+#Resultado
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
+```
+
+##Using weighted.mean
+
+```{r}
+#Tentando fazer usando weighted.mean o resultado não bate. PQ???
+TVhour$peso=NA
+TVhour$peso[which(TVhour$Area==1)]<-(N_h[1]/N)/n_h[1]
+TVhour$peso[which(TVhour$Area==2)]<-(N_h[2]/N)/n_h[2]
+TVhour$peso[which(TVhour$Area==3)]<-(N_h[3]/N)/n_h[3]
+weighted.mean(TVhour$Hour,TVhour$peso)
+weighted.mean(x=TVhour$Hour,w=TVhour$peso)
+
+#Usando a fórmula do peso, bate
+sum(tapply(TVhour$Hour, TVhour$Area, mean)*c((N_h[1]/N),(N_h[2]/N),(N_h[3]/N)))
+```
+
+## 05. [Allocation] PennState (Eberly College os Science), Chapter 6.2 Example 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.2
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/05.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/05-1.jpg")
+```
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/05-2.jpg")
+```
+
+
+### With my function
+```{r}
+N_h=c(155,62,93)
+n=40
+s2_h=c(5^2,15^2,10^2)
+N=sum(N_h)
+stratified_random_sample_allocation(N,N_h,n_h,average_h,s2_h)
+```
+## 06. [Poststratification] PennState (Eberly College os Science), Chapter 6.3 Example 6-3 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.3
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/06.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/06-1.jpg")
+```
+
+### With my function
+```{r}
+N=NA
+n=100
+n_h=c(20,80)
+average_h=c(180,120)
+s2_h=NA
+real_prop=c(.5,.5)
+alpha=.05
+ft=F
+Pos_stratification_mean_total(N,n,n_h,average_h,s2_h,real_prop,alpha,fti)
+```
+
+## 06. [Poststratification] PennState (Eberly College os Science), Chapter 6.3 Example 6-2 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.3
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/07.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/07-1.jpg")
+```
+
+### With my function
+```{r}
+N=NA
+n=100
+n_h=c(70,30)
+average_h=c(520,280)
+s2_h=c(210^2,90^2)
+real_prop=c(.4,.6)
+alpha=.05
+ft=T
+Pos_stratification_mean_total(N,n,n_h,average_h,s2_h,real_prop,alpha,fti)
+```
+
+## 07. [Proportion] PennState (Eberly College os Science), Chapter 6.3 Example 6-3 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.3
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/08.png")
+```
+
+### Doing the calculations
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/08-1.jpg")
+```
+
+### With my function
+```{r}
+N_h=c(155,62,93)
+N=sum(N_h)
+n_h=c(20,8,12)
+proportion_h=c(16,2,6)/n_h
+stratified_random_sample_proportion(N,N_h,n_h,proportion_h)
+```
+
+
+## 08. [Proportion] PennState (Eberly College os Science), Chapter 6.3 Example 6-3 
+
+https://online.stat.psu.edu/stat506/lesson/6/6.3
+
+```{r, echo=F, out.width = '50%'}
+knitr::include_graphics("Images/09.png")
+```
+
+### Doing the calculations
+
+### With my function
+```{r}
+Students_Weights<-data.frame(
+  Weights=c(94,90,102,110,91,99,93,105,111,101,108,96,100,93,93,92,110,94,91,113)
+  ,Class=c(rep(1,4),rep(2,6),rep(3,5),rep(4,5))
+)
+#Foi dado que
+stratum=Students_Weights$Class
+y=Students_Weights$Weights
+N_h=c(24,36,30,30)
+#Obtendo os outros dados
+n_h=tapply(y,stratum,length)
+average_h=tapply(y,stratum,mean)
+s2_h=tapply(y,stratum,var)
+alpha=0.05
+N=sum(N_h)
+#Resultado
+stratified_random_sample_mean_total(N,N_h,n_h,average_h,s2_h,alpha)
+```
+
+## Using weighted.mean
+
+```{r}
+#Tentando fazer usando weighted.mean o resultado não bate. PQ???
+Students_Weights$peso=NA
+Students_Weights$peso[which(Students_Weights$Class==1)]<-(N_h[1]/N)/n_h[1]
+Students_Weights$peso[which(Students_Weights$Class==2)]<-(N_h[2]/N)/n_h[2]
+Students_Weights$peso[which(Students_Weights$Class==3)]<-(N_h[3]/N)/n_h[3]
+Students_Weights$peso[which(Students_Weights$Class==4)]<-(N_h[4]/N)/n_h[4]
+
+weighted.mean(Students_Weights$Weights,Students_Weights$peso)
+weighted.mean(x=Students_Weights$Weights,w=Students_Weights$peso)
+#Usando a fórmula do peso, bate
+sum(tapply(Students_Weights$Weights, Students_Weights$Class, mean)*c(N_h[1]/N,N_h[2]/N,N_h[3]/N,N_h[4]/N) )
+```
